@@ -4,7 +4,13 @@ import course
 
 addedCount = 0
 fileNum = 0
-addFile = open('filterData.bin', 'wb')
+#addFile = open('filterData.bin', 'wb')
+
+def hasGPAGrade(gradesVector):
+	grades = 0
+	for i in range(11):
+		grades+=gradesVector[i]
+	return grades > 5
 
 def filterData(course):
 	if course.studentNum == 0 or course.avgGrade == 0:
@@ -14,7 +20,10 @@ def filterData(course):
 			return
 	except ValueError: # Super weird courses
 		return
-	if len(course.improvedComm) == 0 and len(course.valuableComm) == 0:
+	if len(course.improvedComm) + len(course.valuableComm) < 6:
+		return
+
+	if not hasGPAGrade(course.gradesVector):
 		return
 
 	#put in addFile
