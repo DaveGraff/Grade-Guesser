@@ -5,9 +5,7 @@ def getComments(id, soup):
 	realValuable = []
 	for comment in valuable:
 		comment = comment.lstrip()
-		if len(comment) == 0:
-			valuable.remove(comment)
-		else:
+		if not len(comment) == 0:
 			realValuable += [comment]
 
 	return realValuable

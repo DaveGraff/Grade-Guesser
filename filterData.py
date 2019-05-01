@@ -9,11 +9,11 @@ addFile = open('filterData.bin', 'wb')
 def filterData(course):
 	if course.studentNum == 0 or course.avgGrade == 0:
 		return
-	# try:
-	# 	if int(course.code[3:]) >= 500:
-	# 		return
-	# except ValueError: # Super weird courses
-	# 	return
+	try:
+		if int(course.code[3:]) >= 500:
+			return
+	except ValueError: # Super weird courses
+		return
 	if len(course.improvedComm) == 0 and len(course.valuableComm) == 0:
 		return
 
