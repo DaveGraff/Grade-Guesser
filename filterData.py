@@ -53,7 +53,7 @@ for file in os.listdir("Parsed Data"):
 	while stillFiles:
 		try:
 			filterData(pickle.load(f))
-		except EOFError:
+		except:
 			stillFiles = False
 	print("Finished file" + file)
 	f.close()
