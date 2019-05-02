@@ -6,7 +6,7 @@ import json
 addedCount = 0
 fileNum = 0
 #addFile = open('filterData.bin', 'wb')
-data = {}
+data = []
 
 def hasGPAGrade(gradesVector):
 	grades = 0
@@ -27,9 +27,7 @@ def filterData(course):
 
 	if not hasGPAGrade(course.gradesVector):
 		return
-	
-	if course not in data.keys():
-	 	data[course.code] = {
+	aCourse = {
 			 'code' : course.code,
 			 'semester': course.semester,
 			 'courseType': course.courseType,
@@ -43,8 +41,7 @@ def filterData(course):
 			 'attendance': course.attendance,
 			 'studying': course.studying
 		}
-	else:
-		raise KeyError("Duplicate CourseCode exists")
+	data.append(aCourse)
 	
 	#put in addFile
 	global fileNum
@@ -62,6 +59,7 @@ for file in os.listdir("Parsed Data"):
 	f.close()
 
 print("Filtered 36403 courses to", fileNum)
+print("Writing " + str(len(data)) + " courses to data.json...")
 
 with open('data.json', 'w') as outfile:
 	json.dump(data, outfile, indent=4, sort_keys=True)
