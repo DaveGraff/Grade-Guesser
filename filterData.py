@@ -1,10 +1,12 @@
 import pickle
 import os
 import course
+import json
 
 addedCount = 0
 fileNum = 0
 #addFile = open('filterData.bin', 'wb')
+data = {}
 
 def hasGPAGrade(gradesVector):
 	grades = 0
@@ -25,7 +27,25 @@ def filterData(course):
 
 	if not hasGPAGrade(course.gradesVector):
 		return
-
+	
+	if course not in data.keys():
+	 	data[course.code] = {
+			 'code' : course.code,
+			 'semester': course.semester,
+			 'courseType': course.courseType,
+			 'professors': course.professors,
+			 'courseName': course.courseName,
+			 'studentNum': course.studentNum,
+			 'avgGrade': course.avgGrade,
+			 'gradesVector': course.gradesVector,
+			 'valuableComm': course.valuableComm,
+			 'improvedComm': course.improvedComm,
+			 'attendance': course.attendance,
+			 'studying': course.studying
+		}
+	else:
+		raise KeyError("Duplicate CourseCode exists")
+	
 	#put in addFile
 	global fileNum
 	fileNum += 1
@@ -42,3 +62,6 @@ for file in os.listdir("Parsed Data"):
 	f.close()
 
 print("Filtered 36403 courses to", fileNum)
+
+with open('data.json', 'w') as outfile:
+	json.dump(data, outfile, indent=4, sort_keys=True)
