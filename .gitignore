@@ -2,3 +2,4 @@ __pycache__
 Raw Data
 data.json
 Tagger/venv
+Word2Vec/CBOW-Election.bin

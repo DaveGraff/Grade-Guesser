@@ -1,40 +1,33 @@
+import csv
 import nltk
 nltk.download('punkt')
 from nltk.tokenize import sent_tokenize, word_tokenize 
 import gensim 
 from gensim.models import Word2Vec 
-import json
 import pickle
-  
-f = open("../data.json", "r") 
-data = json.load(f)
-f.close()
 
-# Replaces escape character with space 
-# f = s.replace(r"[\r\n]", " ") 
-  
-newData = [] 
-index = 0
+data = []
 
-for course in data:
-	relev = course['valuableComm'] + course['improvedComm']
-	for comment in relev:
-		for i in sent_tokenize(comment):
-			temp =[]
+with open('election_day_tweets.csv', encoding='utf-8') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
 
-			for j in word_tokenize(i.replace(r"[\r\n]", " ").lstrip()):
-				temp.append(j.lower())
+    for idx, row in enumerate(csv_reader):
+        for i in sent_tokenize(row[0].encode('utf8').decode()):
+            temp = []
 
-			newData.append(temp)
-	index += 1
-	if index % 50 == 0:
-		print("Finished batch", index/50)
+            for j in word_tokenize(i.replace("\n", " ")):
+                temp.append(j.lower())
+
+            data.append(temp)
+        if idx % 50 == 0:
+            print("Processed Batch", idx/50)
+
 
 
 print("Training models")
   
 # # Create CBOW model 
-model1 = gensim.models.Word2Vec(newData, min_count = 1, size = 100, window = 5) 
+model1 = gensim.models.Word2Vec(data, min_count = 1, size = 100, window = 5) 
 f = open("CBOW.bin", 'wb')
 pickle.dump(model1, f)
 f.close
@@ -42,7 +35,7 @@ f.close
 
   
 # Create Skip Gram model 
-model2 = gensim.models.Word2Vec(newData, min_count = 1, size = 100, window = 5, sg = 1) 
+model2 = gensim.models.Word2Vec(data, min_count = 1, size = 100, window = 5, sg = 1) 
 f = open('skipgram.bin', 'wb')
 pickle.dump(model2, f)
 f.close()
