@@ -109,6 +109,9 @@ def trainTagger(features, tags):
 def testAndPrintAcurracies(tagger, features, true_tags):
     pred_tags = tagger.predict(features)
     print("\nModel Accuracy: %.3f" % metrics.accuracy_score(true_tags, pred_tags))
+    for tag in pred_tags:
+        if tag == 16:
+            print(tag)
     #most Frequent Tag: 
     mfTags = [Counter(true_tags).most_common(1)[0][0]]*len(true_tags) 
     print("MostFreqTag Accuracy: %.3f" % metrics.accuracy_score(true_tags, mfTags))
@@ -162,9 +165,10 @@ def taggerTrainer():
     y = []
     for tag in tagToNum:
         if tag == 'A':
-            tagToNum[tag] = 1
-        else:
-            tagToNum[tag] = 0
+            print(tagToNum[tag])
+        #     tagToNum[tag] = 1
+        # else:
+        #     tagToNum[tag] = 0
 
     print("[Extracting Features]")
     for sent in taggedSents:
@@ -193,3 +197,4 @@ if __name__ == "__main__":
         file = open(argv[2], 'wb')
         pickle.dump(tagger, file)
         file.close()
+   
