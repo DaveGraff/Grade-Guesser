@@ -1,3 +1,10 @@
+# This file is responsible for creating a vector embedding
+# models. Both the CBOW (Continuous Bag of Words) and skipgram 
+# models were tested, and CBOW tended to perform better for our
+# tasks. Due to the relatively modest range of opinions in our
+# dataset, this model was trained on Twitter Data following the
+# 2016 election instead. 
+
 import csv
 import nltk
 nltk.download('punkt')

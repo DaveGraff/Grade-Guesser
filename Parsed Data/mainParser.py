@@ -1,3 +1,8 @@
+# This iterates though the raw HTML files downloaded from
+# Classie-Evals and sends them to be parsed into Course objects.
+# It then stores arrays of those objects into a series of binary
+# files.
+
 import course
 import pickle
 import os

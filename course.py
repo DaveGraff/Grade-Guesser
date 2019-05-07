@@ -1,3 +1,8 @@
+# This is the model for which course data is stored in.
+# Since the data was in near identical layouts, you'll
+# notice very specific queries were use to grab the data
+# on some pieces.
+
 from bs4 import BeautifulSoup
 
 def getComments(id, soup):

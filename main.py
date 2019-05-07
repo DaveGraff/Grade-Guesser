@@ -1,3 +1,12 @@
+# This file puts all the others together and computes
+# the final result. It takes the trained tagger, the
+# vector embedding, and the filtered data in .bin and
+# JSON files. Unfortunately, some of the tagger methods
+# to be copied over to save a bit of time instead of
+# figuring out imports. This page also constructs the 
+# featureVector for both the meta data and review data,
+# and feeds them into an RNN as necessary.
+
 #For tagger
 from sklearn.linear_model import LogisticRegression
 import pickle

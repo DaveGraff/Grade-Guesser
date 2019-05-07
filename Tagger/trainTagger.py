@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
+
+# This is a tagger similar to the one used for assignment 1.
+# It's necessary for the feature vector as described in our
+# proposal. Due to severe underfitting of the data, we found it
+# quicker and easier to keep all elements, instead of training it
+# to recognize only Adjectives.
+
 import re
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics

@@ -1,3 +1,10 @@
+# This file is responsible for filtering through the Parsed
+# files to find which we can use. For instance, some courses 
+# only give grades in recitation. We also wanted to exclude
+# grad courses or those with S/U grading. This left us with
+# about ~15,000 courses at the end. The selected data would 
+# then be put in a new binary file.
+
 import pickle
 import os
 import course
