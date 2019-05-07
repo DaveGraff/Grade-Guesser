@@ -17,7 +17,10 @@ import re
 import nltk
 nltk.download('punkt')
 from nltk.tokenize import sent_tokenize, word_tokenize 
-import gensim 
+import gensim
+import numpy as np
+import tensorflow as tf
+import argparse
 	
 
 def getMetaVector(course):
@@ -166,7 +169,7 @@ def getReviewVector(course):
 	adj = []
 	idx = 0
 	for word in wordsArr:
-		if tagger.predict([getFeaturesForTarget(wordsArr, idx)]) == [16]:
+		if not len(word) == 0 and tagger.predict([getFeaturesForTarget(wordsArr, idx)]) == [16]:
 			adj.append(word.lower())
 		
 		idx += 1
@@ -188,10 +191,30 @@ def getReviewVector(course):
 	return features
 
 
+def calculateAllReviewVectorData(data):
+	print("Calculating review data")
+	a1 = np.array(getReviewVector(data[0]))
+	a2 = np.array(getReviewVector(data[1]))
+	reviewVectorData = (np.vstack((a1, a2)))
 
-if __name__ == "__main__":
+	#Plug and chug data in RNN
+	for i in range( 2, len(data)):
+		if i%15==0:
+			print("Progress: " + str(i) + "/" + str(len(data)))
+		currentData = np.array(getReviewVector(data[i]))
+		reviewVectorData = np.vstack((reviewVectorData, currentData))
 
-	
+	print("Review vector data calculated with shape " + str(reviewVectorData.shape))
+	print("Writing review vector data to file: reviewVectorData.csv")
+	np.savetxt("reviewVectorData.csv", reviewVectorData, delimiter=",")
+	return reviewVectorData
+
+
+if __name__ == "__main__":	
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--calc", action='store_true', help="calcualte and write reviewVectorData")
+	args = parser.parse_args()
+
 	f = open("courses.txt")
 	codeList = f.read().splitlines()
 	f.close()
@@ -221,9 +244,9 @@ if __name__ == "__main__":
 	data = json.load(f) #Array of dicts
 	f.close()
 	print("Data loaded")
-	print(getReviewVector(data[0]))
-
-	print(len(data))
-
-
-	#Plug and chug data in RNN
+	 
+	if args.calc:
+		reviewVectorData = calculateAllReviewVectorData(data)
+	else:
+		print("reading reviewVectorData form file reviewVectorData.csv")
+		reviewVectorData = np.genfromtxt("reviewVectorData.csv", delimiter=",")
