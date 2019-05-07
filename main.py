@@ -36,7 +36,7 @@ def getMetaVector(course):
 	#Add year
 	features.append(int(course['semester'].split(" ")[1]) - 2014)
 	#Add course type
-	features.append(['LEC', 'SEM', 'LAB', 'REC'].index(course['courseType'].replace('\r', '')))
+	features.append(['LEC', 'SEM', 'LAB', 'REC', 'TUT', 'CLN'].index(course['courseType'].replace('\r', '')))
 	#Add professor Num
 	features.append(len(course['professors'].split(r'(and)|,')))
 	return features
@@ -209,6 +209,24 @@ def calculateAllReviewVectorData(data):
 	np.savetxt("reviewVectorData.csv", reviewVectorData, delimiter=",")
 	return reviewVectorData
 
+def calculateAllMetaVectorData(data):
+	print("Calculating Meta data")
+	a1 = np.array(getMetaVector(data[0]))
+	a2 = np.array(getMetaVector(data[1]))
+	metaVectorData = (np.vstack((a1, a2)))
+
+	#Plug and chug data in RNN
+	for i in range(2, len(data)):
+		if i%15==0:
+			print("Progress: " + str(i) + "/" + str(len(data)))
+		currentData = np.array(getMetaVector(data[i]))
+		metaVectorData = np.vstack((metaVectorData, currentData))
+
+	print("Meta vector data calculated with shape " + str(metaVectorData.shape))
+	print("Writing Meta vector data to file: metaVectorData.csv")
+	np.savetxt("metaVectorData.csv", metaVectorData, delimiter=",")
+	return metaVectorData
+
 
 if __name__ == "__main__":	
 	parser = argparse.ArgumentParser()
@@ -244,9 +262,9 @@ if __name__ == "__main__":
 	data = json.load(f) #Array of dicts
 	f.close()
 	print("Data loaded")
-	 
+
 	if args.calc:
-		reviewVectorData = calculateAllReviewVectorData(data)
+		metaVectorData = calculateAllMetaVectorData(data)
 	else:
-		print("reading reviewVectorData form file reviewVectorData.csv")
-		reviewVectorData = np.genfromtxt("reviewVectorData.csv", delimiter=",")
+		print("reading metaVectorData form file metaVectorData.csv")
+		reviewVectorData = np.genfromtxt("metaVectorData.csv", delimiter=",")
