@@ -18,10 +18,6 @@ import nltk
 nltk.download('punkt')
 from nltk.tokenize import sent_tokenize, word_tokenize 
 import gensim 
-
-f = open("courses.txt")
-codeList = f.read().splitlines()
-f.close()
 	
 
 def getMetaVector(course):
@@ -42,21 +38,6 @@ def getMetaVector(course):
 	features.append(len(course['professors'].split(r'(and)|,')))
 	return features
 
-
-#Load gazeteer & wordToIndex
-f = open('Tagger/gazeteer.txt', 'r')
-gazeteer = [line.replace('\n', '') for line in f.readlines()]
-f.close()
-f = open("wordToIndex.bin", 'rb')
-wordToIndex = pickle.load(f)
-f.close()
-print("Loaded gazeteer & wordToIndex")
-
-#Load tagger
-f = open("Tagger/tagger.bin", 'rb')
-tagger = pickle.load(f)
-f.close()
-print("Tagger loaded")
 
 def getWordIndex(word, wordToIndex):
     returnList = []
@@ -141,11 +122,6 @@ def getFeaturesForTarget(tokens, targetI):
 
     return featureVector
 
-f = open("Word2Vec/CBOW-Election.bin", 'rb')
-embedding = pickle.load(f)
-f.close()
-print("Vector Embedding loaded")
-
 def meetsThreshold(control, test):
 	num = 0
 	try:
@@ -214,14 +190,40 @@ def getReviewVector(course):
 
 
 if __name__ == "__main__":
+
 	
+	f = open("courses.txt")
+	codeList = f.read().splitlines()
+	f.close()
+
+	#Load gazeteer & wordToIndex
+	f = open('Tagger/gazeteer.txt', 'r')
+	gazeteer = [line.replace('\n', '') for line in f.readlines()]
+	f.close()
+	f = open("wordToIndex.bin", 'rb')
+	wordToIndex = pickle.load(f)
+	f.close()
+	print("Loaded gazeteer & wordToIndex")
+
+	#Load tagger
+	f = open("Tagger/tagger.bin", 'rb')
+	tagger = pickle.load(f)
+	f.close()
+	print("Tagger loaded")
+	
+	f = open("Word2Vec/CBOW.bin", 'rb')
+	embedding = pickle.load(f)
+	f.close()
+	print("Vector Embedding loaded")
 
 	#Load data
 	f = open("data.json")
-	data = json.load(f); #Array of dicts
+	data = json.load(f) #Array of dicts
 	f.close()
 	print("Data loaded")
 	print(getReviewVector(data[0]))
+
+	print(len(data))
 
 
 	#Plug and chug data in RNN
