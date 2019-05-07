@@ -191,22 +191,22 @@ def getReviewVector(course):
 	return features
 
 
-def calculateAllReviewVectorData(data):
+def calculateAllReviewVectorData(data, file):
 	print("Calculating review data")
 	a1 = np.array(getReviewVector(data[0]))
 	a2 = np.array(getReviewVector(data[1]))
 	reviewVectorData = (np.vstack((a1, a2)))
 
 	#Plug and chug data in RNN
-	for i in range( 2, len(data)):
-		if i%15==0:
+	for i in range( 2, 300):
+		if i%150==0:
 			print("Progress: " + str(i) + "/" + str(len(data)))
 		currentData = np.array(getReviewVector(data[i]))
 		reviewVectorData = np.vstack((reviewVectorData, currentData))
 
 	print("Review vector data calculated with shape " + str(reviewVectorData.shape))
-	print("Writing review vector data to file: reviewVectorData.csv")
-	np.savetxt("reviewVectorData.csv", reviewVectorData, delimiter=",")
+	print("Writing review vector data to file: " + file)
+	np.savetxt(file, reviewVectorData, delimiter=",")
 	return reviewVectorData
 
 def calculateAllMetaVectorData(data):
@@ -217,21 +217,21 @@ def calculateAllMetaVectorData(data):
 
 	#Plug and chug data in RNN
 	for i in range(2, len(data)):
-		if i%15==0:
+		if i%1500==0:
 			print("Progress: " + str(i) + "/" + str(len(data)))
 		currentData = np.array(getMetaVector(data[i]))
 		metaVectorData = np.vstack((metaVectorData, currentData))
 
-	print("Meta vector data calculated with shape " + str(metaVectorData.shape))
-	print("Writing Meta vector data to file: metaVectorData.csv")
-	np.savetxt("metaVectorData.csv", metaVectorData, delimiter=",")
 	return metaVectorData
 
 
 if __name__ == "__main__":	
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--calc", action='store_true', help="calcualte and write reviewVectorData")
+	parser.add_argument('--f', type=argparse.FileType('r', encoding='UTF-8'), 
+                      required=True)
 	args = parser.parse_args()
+	print(args.f.name)
 
 	f = open("courses.txt")
 	codeList = f.read().splitlines()
@@ -263,8 +263,14 @@ if __name__ == "__main__":
 	f.close()
 	print("Data loaded")
 
+	# Calculating meta vector data
+	metaVectorData = calculateAllMetaVectorData(data)
+
+	# Calculating or loading review vector data depending on sys.args 
 	if args.calc:
-		metaVectorData = calculateAllMetaVectorData(data)
+		reviewVectorData = calculateAllReviewVectorData(data, args.f.name)
 	else:
-		print("reading metaVectorData form file metaVectorData.csv")
-		reviewVectorData = np.genfromtxt("metaVectorData.csv", delimiter=",")
+		print("reading metaVectorData form file " +  args.f.name)
+		reviewVectorData = np.genfromtxt(args.f.name, delimiter=",")
+
+	print(reviewVectorData.shape)
