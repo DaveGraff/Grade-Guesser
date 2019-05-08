@@ -14,6 +14,7 @@ addedCount = 0
 fileNum = 0
 #addFile = open('filterData.bin', 'wb')
 data = []
+courseCode = []
 
 def hasGPAGrade(gradesVector):
 	grades = 0
@@ -49,7 +50,8 @@ def filterData(course):
 			 'studying': course.studying
 		}
 	data.append(aCourse)
-	
+	k = str(aCourse['code'][3:]) + str(['Winter', 'Spring', 'Summer', 'Fall'].index(aCourse['semester'].split(" ")[0])) + str(['LEC', 'SEM', 'LAB', 'REC', 'TUT', 'CLN'].index(aCourse['courseType'].replace('\r', '')))
+	courseCode.append(k)
 	#put in addFile
 	global fileNum
 	fileNum += 1
@@ -70,3 +72,6 @@ print("Writing " + str(len(data)) + " courses to data.json...")
 
 with open('data.json', 'w') as outfile:
 	json.dump(data, outfile, indent=4, sort_keys=True)
+
+with open('courseCode.json', 'w') as outfile:
+	json.dump(courseCode, outfile, indent=4, sort_keys=True)

@@ -175,7 +175,7 @@ def getReviewVector(course):
 		idx += 1
 	
 	#Counters for similarity
-	hard = 0
+	hard = 0 
 	easy = 0
 	fun = 0
 	boring = 0
