@@ -93,7 +93,7 @@ def run():
     # define the model
     model = Sequential()
     model.add(Embedding(input_dim=vocab_size, output_dim=13, input_length=max_token))
-    #model.add(LSTM(13))
+    model.add(LSTM((13), batch_input_shape=(None, 1433, 13), return_sequences=True))
     model.add(Flatten())
     model.add(Dense(1, activation='relu'))
     # compile the model
