@@ -277,4 +277,6 @@ if __name__ == "__main__":
 		reviewVectorData = np.genfromtxt(args.f.name, delimiter=",")
 
 	print(reviewVectorData.shape)
+
+	# Calls run() from modelRNN.py to build model and fit data. See modelRNN.py for details
 	model.run()

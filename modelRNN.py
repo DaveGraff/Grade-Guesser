@@ -1,3 +1,11 @@
+'''
+This python file is responsible for building the LSTM model
+fitting all the data and doing predictions. This class expects
+reviewVectorData.csv, metaVectorData.csv, courseCode.json
+and data.json to exist in the same directory as thyis file. 
+All the data are loaded from there.
+'''
+
 import numpy as np
 import json
 import tensorflow as tf
@@ -11,6 +19,7 @@ from keras.layers.normalization import BatchNormalization
 import keras.backend as K
 from sklearn.model_selection import train_test_split
 
+# load reviewVectorData, metaVectorData, data, courseCode data from the file
 def load_data():
     # global reviewVectorData, metaVectorData
     # global data
@@ -29,6 +38,9 @@ def load_data():
 
     return reviewVectorData, metaVectorData, data, courseCode
 
+# generates a distionary of courses and their reviewVectorData + metaVectorData
+# Values for courses with the same key are concatenated. Also generates a vector 
+# of avgGrades i.e. labels 
 def generate_courseMap(reviewVectorData, metaVectorData, data, courseCode):
     docs = {}
     labelDoc = {}
@@ -45,7 +57,9 @@ def generate_courseMap(reviewVectorData, metaVectorData, data, courseCode):
     for i in labelDoc.values():
         labels.append(np.mean(i))
     return docs, np.array(labels)
-    
+
+
+# calculates the maximum allowed token from the document vector
 def calc_max_tokens(encoded_docs):
     num_tokens = [len(tokens) for tokens in encoded_docs]
     num_tokens = np.array(num_tokens)
@@ -54,6 +68,7 @@ def calc_max_tokens(encoded_docs):
     max_tokens = int(max_tokens)
     return max_tokens, num_tokens
 
+# returns the data coverage after max-token
 def calc_data_coverage(max_token, num_tokens):
     return np.sum(num_tokens < max_token) / len(num_tokens)
 
@@ -62,7 +77,7 @@ def linear_regression_equality(y_true, y_pred):
     diff = K.abs(y_true-y_pred)
     return K.mean(K.cast(diff < accepted_diff, tf.float32))
 
-
+# This function create and runs the model; might be run individually or from main.py
 def run():
     reviewVectorData, metaVectorData, data, courseCode =  load_data()
     print("Course Codes loaded " + str(len(courseCode)))
@@ -95,7 +110,7 @@ def run():
     model.add(Embedding(input_dim=vocab_size, output_dim=13, input_length=max_token))
     model.add(LSTM((13), batch_input_shape=(None, 1433, 13), return_sequences=True))
     model.add(Flatten())
-    model.add(Dense(1, activation='relu'))
+    model.add(Dense(1, activation='softmax'))
     # compile the model
     model.compile(optimizer='adam', loss='mean_squared_error', metrics=[linear_regression_equality])
     # summarize the model
