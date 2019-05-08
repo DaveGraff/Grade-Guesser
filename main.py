@@ -19,9 +19,9 @@ nltk.download('punkt')
 from nltk.tokenize import sent_tokenize, word_tokenize 
 import gensim
 import numpy as np
-import tensorflow as tf
 import argparse
 	
+import modelRNN as model
 
 def getMetaVector(course):
 	features = []
@@ -222,6 +222,9 @@ def calculateAllMetaVectorData(data):
 		currentData = np.array(getMetaVector(data[i]))
 		metaVectorData = np.vstack((metaVectorData, currentData))
 
+	file = "metaVectorData.csv"
+	print("Writing meta vector data to file: " + file)
+	np.savetxt(file, metaVectorData, delimiter=",")
 	return metaVectorData
 
 
@@ -274,3 +277,4 @@ if __name__ == "__main__":
 		reviewVectorData = np.genfromtxt(args.f.name, delimiter=",")
 
 	print(reviewVectorData.shape)
+	model.run()
