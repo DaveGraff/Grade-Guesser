@@ -110,7 +110,7 @@ def run():
     model.add(Embedding(input_dim=vocab_size, output_dim=13, input_length=max_token))
     model.add(LSTM((13), batch_input_shape=(None, 1433, 13), return_sequences=True))
     model.add(Flatten())
-    model.add(Dense(1, activation='softmax'))
+    model.add(Dense(1, activation='relu'))
     # compile the model
     model.compile(optimizer='adam', loss='mean_squared_error', metrics=[linear_regression_equality])
     # summarize the model

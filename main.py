@@ -21,7 +21,7 @@ import gensim
 import numpy as np
 import argparse
 	
-import modelRNN as model
+import modelLSTM as model
 
 def getMetaVector(course):
 	features = []
